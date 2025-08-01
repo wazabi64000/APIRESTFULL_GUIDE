@@ -49,6 +49,7 @@ nav {
   position: sticky;
   background: #ffffff3d;
   text-align: center;
+  z-index: 1;
  
 }
 
