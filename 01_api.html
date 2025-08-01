@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Qu'est-ce qu'une API ?</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Qu’est-ce qu’une API ?</h1>
+  <nav>
+    <a href="index.html">Accueil</a>
+    <a href="01_api.html">API</a>
+    <a href="02_express.html">Express</a>
+    <a href="03_installation.html">Installation</a>
+    <a href="04_architecture.html">Architecture</a>
+    <a href="05_mysql.html">MySQL</a>
+    <a href="06_mongodb.html">MongoDB</a>
+    <a href="07_deploy.html">Déploiement</a>
+  </nav>
+
+  <p><strong>API</strong> signifie <em>Application Programming Interface</em> (Interface de Programmation Applicative).  
+  C’est un ensemble de règles qui permet à différentes applications ou systèmes de communiquer entre eux.</p>
+
+  <h2>Analogie</h2>
+  <p>Imagine un serveur dans un restaurant : tu (le client) demandes un plat au serveur, qui transmet ta demande à la cuisine.  
+  La cuisine prépare le plat et le serveur te l’apporte.  
+  L’API, c’est comme ce serveur, elle facilite la communication entre le client (une application) et le serveur (le backend).</p>
+
+  <h2>Différence API / Backend / Base de données</h2>
+  <ul>
+    <li><strong>API :</strong> Interface permettant d’accéder à des fonctionnalités ou des données.</li>
+    <li><strong>Backend :</strong> La partie serveur qui traite la logique métier, les règles, la sécurité, etc.</li>
+    <li><strong>Base de données :</strong> L’endroit où les données sont stockées de manière structurée.</li>
+  </ul>
+
+  <p>En résumé : L’API est la porte d’entrée, le backend la cuisine, et la base de données le garde-manger.</p>
+
+  <h2>API RESTful</h2>
+  <p>REST est un style architectural pour les API basé sur des méthodes HTTP standards (GET, POST, PUT, DELETE).  
+  Les API RESTful sont simples, stateless, et utilisent des URLs claires pour représenter les ressources.</p>
+
+  <p><em>Exemple :</em> pour accéder à tous les utilisateurs, on fait une requête <code>GET /api/users</code> ;  
+  pour créer un utilisateur, une requête <code>POST /api/users</code>.</p>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>C'est quoi Express ?</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>C'est quoi Express ?</h1>
+  <nav>
+    <a href="index.html">Accueil</a>
+    <a href="01_api.html">API</a>
+    <a href="02_express.html">Express</a>
+    <a href="03_installation.html">Installation</a>
+    <a href="04_architecture.html">Architecture</a>
+    <a href="05_mysql.html">MySQL</a>
+    <a href="06_mongodb.html">MongoDB</a>
+    <a href="07_deploy.html">Déploiement</a>
+  </nav>
+
+  <p><strong>Express.js</strong> est un framework web minimaliste et flexible pour Node.js,  
+  qui facilite la création d’applications web et d’API RESTful.</p>
+
+  <h2>Pourquoi utiliser Express ?</h2>
+  <ul>
+    <li>Gestion simple des routes HTTP (GET, POST, PUT, DELETE).</li>
+    <li>Support des middlewares pour traiter les requêtes facilement.</li>
+    <li>Extensible grâce à de nombreux modules et plugins.</li>
+    <li>Communauté large et bien documentée.</li>
+  </ul>
+
+  <h2>Analogie</h2>
+  <p>Imagine Express comme un assistant personnel qui organise les rendez-vous,  
+  reçoit les demandes et transmet les instructions aux bonnes personnes.  
+  Il fait le lien entre ce que le client demande et ce que le serveur doit faire.</p>
+
+  <h2>Exemple simple avec Express</h2>
+  <pre><code>const express = require('express');
+const app = express();
+
+app.get('/', (req, res) =&gt; {
+  res.send('Bienvenue sur mon API Express !');
+});
+
+const PORT = 3000;
+app.listen(PORT, () =&gt; {
+  console.log(`Serveur démarré sur le port ${PORT}`);
+});
+</code></pre>
+
+  <p>Ce code crée un serveur qui répond à une requête GET sur la racine <code>/</code>  
+  avec un message simple.</p>
+
+</body>
+</html>

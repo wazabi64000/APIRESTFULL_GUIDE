@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Architecture du projet Express</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    
+    .folder-structure {
+      background: #030303;
+      border: 1px solid #ccc;
+      padding: 15px;
+      font-family: monospace;
+      white-space: pre;
+      margin-bottom: 20px;
+      width: 75%;
+      margin: 15px auto;
+
+    }
+  </style>
+</head>
+<body>
+  <h1>Architecture du projet Express</h1>
+  <nav>
+    <a href="index.html">Accueil</a>
+    <a href="01_api.html">API</a>
+    <a href="02_express.html">Express</a>
+    <a href="03_installation.html">Installation</a>
+    <a href="04_architecture.html">Architecture</a>
+    <a href="05_mysql.html">MySQL</a>
+    <a href="06_mongodb.html">MongoDB</a>
+    <a href="07_deploy.html">Déploiement</a>
+  </nav>
+
+  <p>Voici une architecture recommandée pour organiser votre projet API avec Express :</p>
+
+  <div class="folder-structure">
+    mon-api-express/ <br>
+    ├── config/ <br>
+    │   └── db.js              <em>// Configuration base de données</em><br>
+    ├── models/                <em>// Schémas ou modèles de données</em><br>
+    │   └── user.model.js<br>
+    ├── middleware/            <em>// Middlewares (ex : authentification, logger)</em><br>
+    │   └── auth.js<br>
+    ├── controllers/           <em>// Logique métier et gestion des requêtes</em><br>
+    │   └── user.controller.js<br>
+    ├── routes/                <em>// Définition des routes API</em><br>
+    │   └── user.routes.js<br>
+    ├── server.js              <em>// Point d’entrée du serveur</em><br>
+    ├── package.json<br>
+    └── README.md<br>
+  </div>
+
+  <h2>Explication des dossiers/fichiers</h2>
+  <ul>
+    <li><strong>config/db.js :</strong> contient la configuration et la connexion à la base de données.</li>
+    <li><strong>models/ :</strong> définit la structure des données (ex: User, Product) avec les ORM comme Sequelize ou Mongoose.</li>
+    <li><strong>middleware/ :</strong> contient les fonctions intermédiaires pour traiter les requêtes (authentification, logs, validation).</li>
+    <li><strong>controllers/ :</strong> gère la logique métier, traite les données, appelle les modèles et renvoie les réponses.</li>
+    <li><strong>routes/ :</strong> organise les endpoints de l’API et appelle les contrôleurs selon la route.</li>
+    <li><strong>server.js :</strong> démarre le serveur, connecte les middlewares globaux, et utilise les routes.</li>
+  </ul>
+
+  <h2>Intégration des middlewares et routes dans <code>server.js</code></h2>
+  <pre><code>const express = require('express');
+const app = express();
+
+app.use(express.json()); // Pour parser le JSON des requêtes
+
+// Import des routes
+const userRoutes = require('./routes/user.routes');
+app.use('/api/users', userRoutes);
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () =&gt; {
+  console.log(`Serveur démarré sur le port ${PORT}`);
+});
+</code></pre>
+
+  <p>Les middlewares spécifiques peuvent être appliqués directement dans les routes ou globalement.</p>
+
+</body>
+</html>

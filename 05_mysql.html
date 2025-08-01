@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Exemple MySQL : mysql2/Promise vs Sequelize</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <h1>Exemple MySQL : mysql2/Promise vs Sequelize</h1>
+  <nav>
+    <a href="index.html">Accueil</a>
+    <a href="01_api.html">API</a>
+    <a href="02_express.html">Express</a>
+    <a href="03_installation.html">Installation</a>
+    <a href="04_architecture.html">Architecture</a>
+    <a href="05_mysql.html">MySQL</a>
+    <a href="06_mongodb.html">MongoDB</a>
+    <a href="07_deploy.html">Déploiement</a>
+  </nav>
+<section id="mysql-intro">
+  <h2>Introduction aux méthodes d'accès aux bases de données MySQL</h2>
+  <p>
+    Quand on développe une API qui interagit avec une base de données relationnelle comme MySQL, on a plusieurs manières d’accéder et de manipuler les données.  
+    Deux grandes approches sont couramment utilisées :
+  </p>
+
+  <h3>1. Utiliser un client SQL natif avec Promises (exemple : mysql2/promise)</h3>
+  <p>
+    Cette méthode consiste à écrire directement les requêtes SQL dans votre code.  
+    Ici, la librairie <code>mysql2</code> avec le mode Promise vous permet d'exécuter des requêtes SQL asynchrones de façon propre et simple.  
+  </p>
+  <p><strong>Avantages :</strong></p>
+  <ul>
+    <li>Contrôle précis sur chaque requête SQL</li>
+    <li>Performance optimale car on écrit directement le SQL</li>
+    <li>Moins d’abstraction, donc compréhension directe de ce qui est envoyé à la base</li>
+  </ul>
+  <p><strong>Inconvénients :</strong></p>
+  <ul>
+    <li>Il faut écrire et maintenir toutes les requêtes SQL soi-même</li>
+    <li>Le code peut vite devenir verbeux et répétitif</li>
+    <li>Gestion manuelle des relations entre tables</li>
+  </ul>
+
+  <h3>2. Utiliser un ORM (Object-Relational Mapping) comme Sequelize</h3>
+  <p>
+    Un ORM est une couche d’abstraction qui permet de manipuler la base de données avec des objets et des méthodes en JavaScript, plutôt que d’écrire des requêtes SQL.  
+    Sequelize est un ORM populaire pour Node.js qui supporte MySQL (et d’autres bases relationnelles).  
+  </p>
+  <p><strong>Avantages :</strong></p>
+  <ul>
+    <li>Moins de code SQL à écrire</li>
+    <li>Modèles objets qui représentent les tables (plus naturel pour un développeur JS)</li>
+    <li>Gestion automatique des relations entre modèles (associations)</li>
+    <li>Migrations, validations et hooks intégrés</li>
+    <li>Facilite la maintenance et l’évolution du projet</li>
+  </ul>
+  <p><strong>Inconvénients :</strong></p>
+  <ul>
+    <li>Moins de contrôle direct sur le SQL généré (peut être parfois moins optimisé)</li>
+    <li>Abstraction qui peut cacher la complexité, parfois source de bugs difficile à tracer</li>
+  </ul>
+
+  <h3>Qu’est-ce qu’un ODM et un ORM ?</h3>
+  <p>
+    - <strong>ORM (Object-Relational Mapping)</strong> : C’est un outil qui fait le lien entre les bases de données relationnelles (SQL) et le code objet.  
+    Il convertit automatiquement les objets JavaScript en requêtes SQL, et les résultats SQL en objets JavaScript.  
+    Sequelize est un ORM.<br><br>
+    - <strong>ODM (Object-Document Mapping)</strong> : Même idée que l’ORM mais pour les bases de données NoSQL orientées document comme MongoDB.  
+    Par exemple, Mongoose est un ODM qui fait le lien entre les documents MongoDB et des objets JavaScript.
+  </p>
+  <p>
+    Ainsi, selon ta base de données, tu utiliseras soit un ORM (pour SQL), soit un ODM (pour NoSQL).  
+    Dans ce cours, nous allons voir un exemple MySQL avec mysql2 et Sequelize (ORM) et un exemple MongoDB avec Mongoose (ODM).
+  </p>
+
+  <h3>Analogie</h3>
+  <p>
+    Imagine que la base de données est une bibliothèque gigantesque :<br>
+    - Avec <strong>mysql2</strong>, tu vas chercher toi-même les livres (requêtes SQL), tu lis la carte et trouves l’emplacement précis.<br>
+    - Avec <strong>Sequelize (ORM)</strong>, tu demandes à un assistant (ORM) qui connaît très bien la bibliothèque de te ramener les livres (objets) que tu souhaites, et il fait toute la recherche et organisation pour toi.<br>
+    - Avec <strong>Mongoose (ODM)</strong>, c’est la même chose mais dans une bibliothèque un peu différente, où les livres sont rangés sous forme de documents avec une organisation plus flexible.
+  </p>
+</section>
+
+  <!-- Section mysql2 avec Promise -->
+  <section id="mysql2-promise">
+    <h2>MySQL avec mysql2 et Promises</h2>
+    <h3>Installation</h3>
+    <pre><code>npm install express mysql2</code></pre>
+
+    <h3>1. Configuration de la connexion (config/db.js)</h3>
+    <pre><code>const mysql = require('mysql2/promise');
+
+const pool = mysql.createPool({
+  host: 'localhost',
+  user: 'root',
+  password: 'password',
+  database: 'api_express',
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
+});
+
+module.exports = pool;
+</code></pre>
+
+    <h3>2. Exemple simple de route (routes/user.routes.js)</h3>
+    <pre><code>const express = require('express');
+const router = express.Router();
+const pool = require('../config/db');
+
+// GET all users
+router.get('/', async (req, res) =&gt; {
+  try {
+    const [rows] = await pool.query('SELECT * FROM users');
+    res.json(rows);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// POST create user
+router.post('/', async (req, res) =&gt; {
+  try {
+    const { username, email } = req.body;
+    const [result] = await pool.query(
+      'INSERT INTO users (username, email) VALUES (?, ?)', 
+      [username, email]
+    );
+    res.status(201).json({ id: result.insertId, username, email });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+module.exports = router;
+</code></pre>
+
+    <h3>3. Server.js (point d'entrée)</h3>
+    <pre><code>const express = require('express');
+const app = express();
+const userRoutes = require('./routes/user.routes');
+
+app.use(express.json());
+app.use('/api/users', userRoutes);
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () =&gt; {
+  console.log(`Serveur démarré sur le port ${PORT}`);
+});
+</code></pre>
+
+    <h3>Notes</h3>
+    <p>Avec cette méthode, tu écris directement des requêtes SQL, ce qui donne un contrôle précis mais demande plus de code manuel.</p>
+  </section>
+
+  <!-- Section Sequelize -->
+  <section id="sequelize">
+    <h2>MySQL avec Sequelize (ORM)</h2>
+    <h3>Installation</h3>
+    <pre><code>npm install express sequelize mysql2</code></pre>
+
+    <h3>1. Configuration de la connexion (config/db.js)</h3>
+    <pre><code>const { Sequelize } = require('sequelize');
+
+const sequelize = new Sequelize('api_express', 'root', 'password', {
+  host: 'localhost',
+  dialect: 'mysql',
+});
+
+module.exports = sequelize;
+</code></pre>
+
+    <h3>2. Modèle User (models/user.model.js)</h3>
+    <pre><code>const { DataTypes } = require('sequelize');
+const sequelize = require('../config/db');
+
+const User = sequelize.define('User', {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+  },
+  username: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  email: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+  }
+});
+
+module.exports = User;
+</code></pre>
+
+    <h3>3. Contrôleur User (controllers/user.controller.js)</h3>
+    <pre><code>const User = require('../models/user.model');
+
+exports.getAllUsers = async (req, res) =&gt; {
+  try {
+    const users = await User.findAll();
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.createUser = async (req, res) =&gt; {
+  try {
+    const { username, email } = req.body;
+    const newUser = await User.create({ username, email });
+    res.status(201).json(newUser);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+</code></pre>
+
+    <h3>4. Routes User (routes/user.routes.js)</h3>
+    <pre><code>const express = require('express');
+const router = express.Router();
+const userController = require('../controllers/user.controller');
+
+router.get('/', userController.getAllUsers);
+router.post('/', userController.createUser);
+
+module.exports = router;
+</code></pre>
+
+    <h3>5. Server.js (point d'entrée)</h3>
+    <pre><code>const express = require('express');
+const app = express();
+const sequelize = require('./config/db');
+const userRoutes = require('./routes/user.routes');
+
+app.use(express.json());
+app.use('/api/users', userRoutes);
+
+const PORT = process.env.PORT || 3000;
+
+sequelize.sync()
+  .then(() =&gt; {
+    app.listen(PORT, () =&gt; {
+      console.log(`Serveur démarré sur le port ${PORT}`);
+    });
+  })
+  .catch(err =&gt; console.error('Erreur DB:', err));
+</code></pre>
+
+    <h3>Notes</h3>
+    <p>Sequelize est un ORM qui facilite la gestion de la base avec des objets JavaScript, idéal pour les projets évolutifs et maintenables.</p>
+  </section>
+
+</body>
+</html>

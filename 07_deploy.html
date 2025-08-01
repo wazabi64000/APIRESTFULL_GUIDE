@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tests, déploiement & bonnes pratiques</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Tests, déploiement & bonnes pratiques</h1>
+  <nav>
+    <a href="index.html">Accueil</a>
+    <a href="01_api.html">API</a>
+    <a href="02_express.html">Express</a>
+    <a href="03_installation.html">Installation</a>
+    <a href="04_architecture.html">Architecture</a>
+    <a href="05_mysql.html">MySQL</a>
+    <a href="06_mongodb.html">MongoDB</a>
+    <a href="07_deploy.html">Déploiement</a>
+  </nav>
+
+  <h2>Tests basiques</h2>
+  <p>Tester votre API localement avant déploiement est crucial.</p>
+  <ul>
+    <li><strong>Postman</strong> : outil graphique pour envoyer des requêtes HTTP.</li>
+    <li><strong>curl</strong> : ligne de commande pour tester rapidement.</li>
+  </ul>
+
+  <h3>Exemple de test avec curl</h3>
+  <pre><code>curl http://localhost:3000/api/users
+curl -X POST http://localhost:3000/api/users \
+ -H "Content-Type: application/json" \
+ -d '{"username":"TestUser","email":"test@example.com"}'
+</code></pre>
+
+  <h2>Tests automatisés (optionnel)</h2>
+  <p>On peut automatiser les tests avec des frameworks comme <code>mocha</code> et <code>chai</code>.</p>
+  <pre><code>npm install --save-dev mocha chai supertest</code></pre>
+
+  <h2>Déploiement sur Render via GitHub</h2>
+  <ol>
+    <li>Créer un dépôt GitHub et y pousser votre code.</li>
+    <li>Créer un compte sur <a href="https://render.com" target="_blank">Render</a>.</li>
+    <li>Créer un nouveau service Web en connectant votre dépôt GitHub.</li>
+    <li>Configurer la commande de build (ex : <code>npm install</code>) et la commande de start (<code>node server.js</code>).</li>
+    <li>Définir les variables d’environnement (ex : <code>DB_HOST</code>, <code>DB_USER</code>, etc.) dans Render.</li>
+    <li>Render va automatiquement déployer et lancer votre API.</li>
+  </ol>
+
+  <h2>Bonnes pratiques</h2>
+  <ul>
+    <li><strong>Structure claire :</strong> séparer config, modèles, routes, contrôleurs.</li>
+    <li><strong>Utiliser des middlewares :</strong> pour la sécurité (auth, CORS), gestion d’erreurs, logs.</li>
+    <li><strong>Valider les données :</strong> avec des librairies comme <code>Joi</code> ou <code>express-validator</code>.</li>
+    <li><strong>Utiliser Git :</strong> pour versionner le code et faciliter les déploiements.</li>
+    <li><strong>Documenter votre API :</strong> avec Swagger ou Postman.</li>
+    <li><strong>Gérer les erreurs proprement :</strong> renvoyer des codes HTTP adaptés.</li>
+    <li><strong>Éviter d’exposer les infos sensibles :</strong> utiliser des variables d’environnement.</li>
+  </ul>
+
+</body>
+</html>
