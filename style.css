@@ -137,11 +137,11 @@ pre:hover {
 }
 
 code {
-  background: #333;
+ 
   padding: 0.2rem 0.5rem;
   border-radius: 5px;
   font-family: 'Source Code Pro', monospace, monospace;
-  color: #ff61a6;
+  color: #2ad400;
 }
 
 /* Buttons and highlights */
