@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Tests, déploiement & bonnes pratiques</title>
-<link rel="stylesheet" href="style.css">
+  <title>Tests, déploiement & bonnes pratiques (ESM)</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>Tests, déploiement & bonnes pratiques</h1>
+  <h1>Tests, déploiement & bonnes pratiques (ESM)</h1>
   <nav>
     <a href="index.html">Accueil</a>
     <a href="01_api.html">API</a>
@@ -34,13 +34,114 @@ curl -X POST http://localhost:3000/api/users \
 </code></pre>
 
   <h2>Tests automatisés (optionnel)</h2>
-  <p>On peut automatiser les tests avec des frameworks comme <code>mocha</code> et <code>chai</code>.</p>
+  <p>On peut automatiser les tests avec des frameworks comme <code>mocha</code>, <code>chai</code> et <code>supertest</code>.</p>
   <pre><code>npm install --save-dev mocha chai supertest</code></pre>
+
+  <h3>Présentation rapide</h3>
+  <ul>
+    <li><strong>Mocha</strong> : framework de test permettant d'organiser et d'exécuter vos tests.</li>
+    <li><strong>Chai</strong> : bibliothèque d'assertions qui rend les tests plus lisibles et expressifs.</li>
+    <li><strong>Supertest</strong> : simule des requêtes HTTP pour tester vos routes Express.</li>
+  </ul>
+
+  <h3>Exemple concret complet avec ES Modules</h3>
+  <p>Voici un mini projet Express simple avec deux routes et des tests automatisés, en syntaxe ES Modules :</p>
+
+  <h4>1. Fichier <code>app.js</code></h4>
+  <pre><code>import express from 'express';
+
+const app = express();
+app.use(express.json());
+
+const users = [];
+
+app.get('/api/users', (req, res) => {
+  res.json(users);
+});
+
+app.post('/api/users', (req, res) => {
+  const { username, email } = req.body;
+  if (!username || !email) {
+    return res.status(400).json({ error: 'username et email sont requis' });
+  }
+  const newUser = { id: users.length + 1, username, email };
+  users.push(newUser);
+  res.status(201).json(newUser);
+});
+
+export default app;
+</code></pre>
+
+  <h4>2. Fichier <code>server.js</code></h4>
+  <pre><code>import app from './app.js';
+
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log(`Serveur démarré sur le port ${PORT}`);
+});
+</code></pre>
+
+  <h4>3. Fichier de test <code>test/users.test.js</code></h4>
+  <pre><code>import request from 'supertest';
+import { expect } from 'chai';
+import app from '../app.js';
+
+describe('API Utilisateurs', () => {
+
+  it('GET /api/users doit renvoyer un tableau vide initialement', async () => {
+    const res = await request(app).get('/api/users');
+    expect(res.status).to.equal(200);
+    expect(res.body).to.be.an('array').that.is.empty;
+  });
+
+  it('POST /api/users doit créer un utilisateur', async () => {
+    const user = { username: 'Jean', email: 'jean@example.com' };
+    const res = await request(app)
+      .post('/api/users')
+      .send(user)
+      .set('Accept', 'application/json');
+
+    expect(res.status).to.equal(201);
+    expect(res.body).to.include(user);
+    expect(res.body).to.have.property('id');
+  });
+
+  it('POST /api/users doit retourner une erreur si données manquantes', async () => {
+    const res = await request(app)
+      .post('/api/users')
+      .send({ username: 'Jean' })
+      .set('Accept', 'application/json');
+
+    expect(res.status).to.equal(400);
+    expect(res.body).to.have.property('error');
+  });
+
+  it('GET /api/users doit maintenant contenir 1 utilisateur', async () => {
+    const res = await request(app).get('/api/users');
+    expect(res.body).to.be.an('array').with.lengthOf(1);
+  });
+
+});
+</code></pre>
+
+  <h4>4. Configurer <code>package.json</code></h4>
+  <p>Pour activer ES Modules dans Node.js, ajoutez dans votre <code>package.json</code> :</p>
+  <pre><code>{
+  "type": "module",
+  "scripts": {
+    "test": "mocha"
+  }
+}</code></pre>
+
+  <h4>5. Lancer les tests</h4>
+  <p>Enfin, lancez les tests avec :</p>
+  <pre><code>npm test</code></pre>
 
   <h2>Déploiement sur Render via GitHub</h2>
   <ol>
     <li>Créer un dépôt GitHub et y pousser votre code.</li>
-    <li>Créer un compte sur <a href="https://render.com" target="_blank">Render</a>.</li>
+    <li>Créer un compte sur <a href="https://render.com" target="_blank" rel="noopener">Render</a>.</li>
     <li>Créer un nouveau service Web en connectant votre dépôt GitHub.</li>
     <li>Configurer la commande de build (ex : <code>npm install</code>) et la commande de start (<code>node server.js</code>).</li>
     <li>Définir les variables d’environnement (ex : <code>DB_HOST</code>, <code>DB_USER</code>, etc.) dans Render.</li>
@@ -57,6 +158,5 @@ curl -X POST http://localhost:3000/api/users \
     <li><strong>Gérer les erreurs proprement :</strong> renvoyer des codes HTTP adaptés.</li>
     <li><strong>Éviter d’exposer les infos sensibles :</strong> utiliser des variables d’environnement.</li>
   </ul>
-
 </body>
 </html>

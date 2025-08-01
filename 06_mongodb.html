@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Exemple MongoDB avec Mongoose</title>
-<link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <h1>Exemple MongoDB avec Mongoose</h1>
@@ -24,54 +24,55 @@
     <li>MongoDB installé et lancé en local (ex : via MongoDB Community Server).</li>
     <li>Base de données créée automatiquement par Mongoose à la connexion.</li>
   </ul>
-<section id="mongodb-intro">
-  <h2>Introduction à MongoDB et Mongoose (ODM)</h2>
-  <p>
-    MongoDB est une base de données NoSQL orientée documents.  
-    Contrairement aux bases relationnelles (comme MySQL), elle stocke les données sous forme de documents JSON, plus flexibles et sans schéma fixe strict.
-  </p>
 
-  <h3>Qu’est-ce qu’un ODM ?</h3>
-  <p>
-    Un <strong>ODM (Object-Document Mapping)</strong> est une couche qui permet de manipuler la base de données document (NoSQL) comme si on manipulait des objets dans le code.  
-    Il fait la correspondance entre les documents MongoDB et des objets JavaScript.
-  </p>
+  <section id="mongodb-intro">
+    <h2>Introduction à MongoDB et Mongoose (ODM)</h2>
+    <p>
+      MongoDB est une base de données NoSQL orientée documents.  
+      Contrairement aux bases relationnelles (comme MySQL), elle stocke les données sous forme de documents JSON, plus flexibles et sans schéma fixe strict.
+    </p>
 
-  <h3>Mongoose : l’ODM le plus populaire pour MongoDB</h3>
-  <p>
-    Mongoose fournit un système de schéma et un ensemble d’API pour créer, lire, mettre à jour et supprimer des documents MongoDB via des objets JavaScript.  
-    Il permet aussi d’avoir des validations, des middlewares, des hooks, etc.
-  </p>
+    <h3>Qu’est-ce qu’un ODM ?</h3>
+    <p>
+      Un <strong>ODM (Object-Document Mapping)</strong> est une couche qui permet de manipuler la base de données document (NoSQL) comme si on manipulait des objets dans le code.  
+      Il fait la correspondance entre les documents MongoDB et des objets JavaScript.
+    </p>
 
-  <h3>Différence entre ORM et ODM</h3>
-  <ul>
-    <li><strong>ORM</strong> (Object-Relational Mapping) travaille avec des bases relationnelles SQL (tables, colonnes, relations) — ex : Sequelize pour MySQL, PostgreSQL, etc.</li>
-    <li><strong>ODM</strong> (Object-Document Mapping) travaille avec des bases orientées document NoSQL (JSON, BSON) — ex : Mongoose pour MongoDB.</li>
-  </ul>
+    <h3>Mongoose : l’ODM le plus populaire pour MongoDB</h3>
+    <p>
+      Mongoose fournit un système de schéma et un ensemble d’API pour créer, lire, mettre à jour et supprimer des documents MongoDB via des objets JavaScript.  
+      Il permet aussi d’avoir des validations, des middlewares, des hooks, etc.
+    </p>
 
-  <h3>Avantages de Mongoose</h3>
-  <ul>
-    <li>Schéma flexible mais structuré</li>
-    <li>Validation des données côté application</li>
-    <li>Gestion facile des relations entre documents (via références ou sous-documents)</li>
-    <li>Middleware (hooks) pour gérer des traitements avant/après les opérations</li>
-  </ul>
+    <h3>Différence entre ORM et ODM</h3>
+    <ul>
+      <li><strong>ORM</strong> (Object-Relational Mapping) travaille avec des bases relationnelles SQL (tables, colonnes, relations) — ex : Sequelize pour MySQL, PostgreSQL, etc.</li>
+      <li><strong>ODM</strong> (Object-Document Mapping) travaille avec des bases orientées document NoSQL (JSON, BSON) — ex : Mongoose pour MongoDB.</li>
+    </ul>
 
-  <h3>Analogie</h3>
-  <p>
-    Imagine une bibliothèque moderne où les livres sont rangés par thèmes dans des boîtes souples et modulables (documents).  
-    Avec <strong>Mongoose</strong>, tu utilises un assistant qui connaît bien chaque boîte et sait comment les ouvrir, lire, modifier et ranger les livres à ta place, en suivant des règles précises.  
-    Ce système est différent d’une bibliothèque classique (relationnelle) où les livres sont rangés sur des étagères fixes (tables) avec un ordre très rigide.
-  </p>
-</section>
+    <h3>Avantages de Mongoose</h3>
+    <ul>
+      <li>Schéma flexible mais structuré</li>
+      <li>Validation des données côté application</li>
+      <li>Gestion facile des relations entre documents (via références ou sous-documents)</li>
+      <li>Middleware (hooks) pour gérer des traitements avant/après les opérations</li>
+    </ul>
+
+    <h3>Analogie</h3>
+    <p>
+      Imagine une bibliothèque moderne où les livres sont rangés par thèmes dans des boîtes souples et modulables (documents).  
+      Avec <strong>Mongoose</strong>, tu utilises un assistant qui connaît bien chaque boîte et sait comment les ouvrir, lire, modifier et ranger les livres à ta place, en suivant des règles précises.  
+      Ce système est différent d’une bibliothèque classique (relationnelle) où les livres sont rangés sur des étagères fixes (tables) avec un ordre très rigide.
+    </p>
+  </section>
 
   <h2>Installer les dépendances</h2>
   <pre><code>npm install express mongoose</code></pre>
 
   <h2>1. Configuration de la connexion (config/db.js)</h2>
-  <pre><code>const mongoose = require('mongoose');
+  <pre><code>import mongoose from 'mongoose';
 
-const connectDB = async () =&gt; {
+const connectDB = async () => {
   try {
     await mongoose.connect('mongodb://localhost:27017/api_express', {
       useNewUrlParser: true,
@@ -84,11 +85,11 @@ const connectDB = async () =&gt; {
   }
 };
 
-module.exports = connectDB;
+export default connectDB;
 </code></pre>
 
   <h2>2. Modèle User (models/user.model.js)</h2>
-  <pre><code>const mongoose = require('mongoose');
+  <pre><code>import mongoose from 'mongoose';
 
 const UserSchema = new mongoose.Schema({
   username: {
@@ -102,13 +103,15 @@ const UserSchema = new mongoose.Schema({
   }
 });
 
-module.exports = mongoose.model('User', UserSchema);
+const User = mongoose.model('User', UserSchema);
+
+export default User;
 </code></pre>
 
   <h2>3. Contrôleur User (controllers/user.controller.js)</h2>
-  <pre><code>const User = require('../models/user.model');
+  <pre><code>import User from '../models/user.model.js';
 
-exports.getAllUsers = async (req, res) =&gt; {
+export const getAllUsers = async (req, res) => {
   try {
     const users = await User.find();
     res.json(users);
@@ -117,7 +120,7 @@ exports.getAllUsers = async (req, res) =&gt; {
   }
 };
 
-exports.createUser = async (req, res) =&gt; {
+export const createUser = async (req, res) => {
   try {
     const { username, email } = req.body;
     const newUser = new User({ username, email });
@@ -127,4 +130,7 @@ exports.createUser = async (req, res) =&gt; {
     res.status(400).json({ error: error.message });
   }
 };
-</code></p
+</code></pre>
+
+</body>
+</html>

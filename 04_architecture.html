@@ -3,10 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Architecture du projet Express</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Architecture du projet Express (ESM)</title>
+  <link rel="stylesheet" href="style.css" />
   <style>
-    
     .folder-structure {
       background: #030303;
       border: 1px solid #ccc;
@@ -16,12 +15,11 @@
       margin-bottom: 20px;
       width: 75%;
       margin: 15px auto;
-
     }
   </style>
 </head>
 <body>
-  <h1>Architecture du projet Express</h1>
+  <h1>Architecture du projet Express (ESM)</h1>
   <nav>
     <a href="index.html">Accueil</a>
     <a href="01_api.html">API</a>
@@ -62,18 +60,19 @@
     <li><strong>server.js :</strong> démarre le serveur, connecte les middlewares globaux, et utilise les routes.</li>
   </ul>
 
-  <h2>Intégration des middlewares et routes dans <code>server.js</code></h2>
-  <pre><code>const express = require('express');
+  <h2>Intégration des middlewares et routes dans <code>server.js</code> avec ES Modules</h2>
+  <pre><code>import express from 'express';
+import userRoutes from './routes/user.routes.js';
+
 const app = express();
 
 app.use(express.json()); // Pour parser le JSON des requêtes
 
-// Import des routes
-const userRoutes = require('./routes/user.routes');
+// Utilisation des routes
 app.use('/api/users', userRoutes);
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () =&gt; {
+app.listen(PORT, () => {
   console.log(`Serveur démarré sur le port ${PORT}`);
 });
 </code></pre>
